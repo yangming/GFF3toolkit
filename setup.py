@@ -31,43 +31,44 @@ class bdist_wheel(_bdist_wheel):
         # Mark us as not a pure python package
         self.root_is_pure = False
 
-class CustomBuildCommand(build):
-    def run(self):
-        platform_system = platform.system(
-        )  # Linux: Linux; Mac:Darwin; Windows: Windows
-
-        blast_path = path.join(here, 'gff3tool', 'lib', 'ncbi-blast+')
-        blast_file = path.join(blast_path, 'blast.tgz')
-
-        mkdir(blast_path)
-
-        if platform_system == 'Linux':
-            urlretrieve(
-                'https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.31/ncbi-blast-2.2.31+-x64-linux.tar.gz',
-                blast_file)
-        elif platform_system == 'Windows':
-            urlretrieve(
-                'https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.31/ncbi-blast-2.2.31+-x64-win64.tar.gz',
-                blast_file)
-        elif platform_system == 'Darwin':
-            urlretrieve(
-                'https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.31/ncbi-blast-2.2.31+-universal-macosx.tar.gz',
-                blast_file)
-        else:
-            sys.error(
-                'GFF3 Toolkit currently only supports linux, windows, and MacOS'
-            )
-
-        tar = tarfile.open(blast_file, 'r:gz')
-        tar.extractall(blast_path)
-        tar.close()
-
-        extract_path = path.join(blast_path, 'ncbi-blast-2.2.31+')
-        shutil.move(path.join(extract_path, 'bin'), blast_path)
-        if path.exists(blast_file):
-            remove(blast_file)
-        if path.exists(extract_path):
-            shutil.rmtree(extract_path)
+# use system-wide blast command
+#  class CustomBuildCommand(build):
+    #  def run(self):
+        #  platform_system = platform.system(
+        #  )  # Linux: Linux; Mac:Darwin; Windows: Windows
+#
+        #  blast_path = path.join(here, 'gff3tool', 'lib', 'ncbi-blast+')
+        #  blast_file = path.join(blast_path, 'blast.tgz')
+#
+        #  mkdir(blast_path)
+#
+        #  if platform_system == 'Linux':
+            #  urlretrieve(
+                #  'https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.31/ncbi-blast-2.2.31+-x64-linux.tar.gz',
+                #  blast_file)
+        #  elif platform_system == 'Windows':
+            #  urlretrieve(
+                #  'https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.31/ncbi-blast-2.2.31+-x64-win64.tar.gz',
+                #  blast_file)
+        #  elif platform_system == 'Darwin':
+            #  urlretrieve(
+                #  'https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.31/ncbi-blast-2.2.31+-universal-macosx.tar.gz',
+                #  blast_file)
+        #  else:
+            #  sys.error(
+                #  'GFF3 Toolkit currently only supports linux, windows, and MacOS'
+            #  )
+#
+        #  tar = tarfile.open(blast_file, 'r:gz')
+        #  tar.extractall(blast_path)
+        #  tar.close()
+#
+        #  extract_path = path.join(blast_path, 'ncbi-blast-2.2.31+')
+        #  shutil.move(path.join(extract_path, 'bin'), blast_path)
+        #  if path.exists(blast_file):
+            #  remove(blast_file)
+        #  if path.exists(extract_path):
+            #  shutil.rmtree(extract_path)
 
 # Get the long description from the README file
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
@@ -150,7 +151,7 @@ setup(
         'License :: Public Domain',
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.x',
     ],
 
     # This field adds keywords for your project which will appear on the
@@ -171,7 +172,7 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),  # Required
 
     cmdclass={
-        'build': CustomBuildCommand,
+        #  'build': CustomBuildCommand,
         'bdist_wheel': bdist_wheel
     },
 
